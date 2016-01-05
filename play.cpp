@@ -50,6 +50,13 @@ bool missileHitAlienship(sf::RectangleShape &missile,sf::RectangleShape &aliensh
     return ((missilePos.x>alienshipPos.x && missilePos.x<alienshipPos.x+150) && (missilePos.y>alienshipPos.y && missilePos.y<alienshipPos.y+150));
 }
 
+//detect bomb hit
+bool hasHitBomb(sf::RectangleShape &jet,sf::RectangleShape &bomb){
+    sf::Vector2f bombPos=bomb.getPosition();
+    sf::Vector2f jetPos=jet.getPosition();
+    return ((bombPos.x>jetPos.x && bombPos.x<jetPos.x+100) && (bombPos.y>jetPos.y && bombPos.y<jetPos.y+100));
+}
+
 
 
 int main(){
@@ -168,6 +175,15 @@ int main(){
     recEnemyJet.setTexture(&enemyJetIcon);
     recEnemyJet.setPosition(400,50);
 
+
+      //Texture Enemy jet
+    sf::Texture enemyBombIcon;
+    enemyBombIcon.loadFromFile("images/bomb.png");
+    //RectangleShape for jet
+    sf::RectangleShape recEnemyBomb;
+    recEnemyBomb.setSize(sf::Vector2f(30,50));
+    recEnemyBomb.setTexture(&enemyBombIcon);
+
 //main window
     sf::RenderWindow window(sf::VideoMode(850,630), "Star-Fighters");
     bool missileFire=false;
@@ -203,13 +219,16 @@ int main(){
     beepPowerStar.setVolume(40);
 
     bool badgeUpdate;
+    bool bombAgain=false;
+    int bombCount=0;
+    bool bombHit=false;
 
 
 //GAME LOOP
     while (window.isOpen()){
         showPowerStar=false;
         window.clear(sf::Color::Black);
-        recAlienShip.move(0,.03);
+        recAlienShip.move(0,.05);
         recRock.move(0,0.05);
         recFireball.move(0,.1);
         recFireball02.move(0,0.1);
@@ -231,7 +250,7 @@ int main(){
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
                 recJet.setPosition(jetPos.x,jetPos.y-.25);
                 recAlienShip.move(0,.05);
-                recRock.move(0,.25);
+                recRock.move(0,.30);
                 recFireball.move(0,0.25);
                 recFireball02.move(0,0.05);
         }
@@ -367,9 +386,39 @@ int main(){
         if(recEnemyJetPos.x>700){
             recEnemyJet.setPosition(0,50);
         }
-        recEnemyJet.move(+.25,0);
+        recEnemyJet.move(+.15,0);
+        if(hasReachedBoundary(recEnemyBomb)){
+           bombAgain=true;
+        }
+        if(bombAgain){
+            recEnemyBomb.setPosition(recEnemyJetPos.x+30,recEnemyJetPos.y+100);
+            bombAgain=false;
+        }else{
+            recEnemyBomb.move(0,.6);
+        }
+        if(hasHitBomb(recJet,recEnemyBomb)){
+            recEnemyBomb.setTexture(&missileHitIcon);
+            recEnemyBomb.setSize(sf::Vector2f(500,500));
+            alienShipHit.play();
+
+            if(!bombHit){
+                bombCount++;
+                bombHit=true;
+                health--;
+                std::cout<<bombCount<<std::endl;
+            }
+        }
+        if(hasReachedBoundary(recEnemyBomb)){
+            bombHit=false;
+            recEnemyBomb.setTexture(&enemyBombIcon);
+            recEnemyBomb.setSize(sf::Vector2f(40,50));
+        }
+
+        window.draw(recEnemyBomb);
         window.draw(recEnemyJet);
+
     }
+
 
         window.draw(recMissile);
         window.draw(recFireball02);
