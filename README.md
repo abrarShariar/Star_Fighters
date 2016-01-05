@@ -4,8 +4,10 @@ UNDER DEVELOPMENT
 
 **Run play.exe & Play at your own RISK !!** 
 
-Basic Game Instructions: 
 <hr>
+
+Basic Game Instructions: 
+
 
 *-Press "Space" to launce missile*
 
