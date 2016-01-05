@@ -9,7 +9,7 @@ UNDER DEVELOPMENT
 Basic Game Instructions: 
 
 
-*-Press "Space" to launce missile*
+*-Press "Space" to launch missile*
 
 *-The golden stars indicate your health status*
 
