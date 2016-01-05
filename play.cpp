@@ -1,5 +1,5 @@
 //UNDER DEVELOPMENT
-
+//January 2016
 
 #include<SFML/Graphics.hpp>
 #include<SFML/Window.hpp>
@@ -35,6 +35,12 @@ bool isPowerStarHit(sf::RectangleShape &jet, sf::RectangleShape &power){
 bool hasReachedBoundary(sf::RectangleShape &obj){
     sf::Vector2f objPos=obj.getPosition();
     return (objPos.y>590);
+}
+
+//check if object has crossed top window
+bool hasReachedTop(sf::RectangleShape &obj){
+    sf::Vector2f objPos=obj.getPosition();
+    return (objPos.y<10);
 }
 
 //detect missile hit alienship
@@ -144,13 +150,32 @@ int main(){
     recMissileHit.setSize(sf::Vector2f(70,70));
     recMissileHit.setTexture(&missileHitIcon);
 
+     //Texture Power Badge
+    sf::Texture badgeIcon;
+    badgeIcon.loadFromFile("images/badge.png");
+    //RectangleShape for missile hit
+    sf::RectangleShape recBadge;
+    recBadge.setSize(sf::Vector2f(60,30));
+    recBadge.setTexture(&badgeIcon);
+
+
+      //Texture Enemy jet
+    sf::Texture enemyJetIcon;
+    enemyJetIcon.loadFromFile("images/enemyJet.png");
+    //RectangleShape for jet
+    sf::RectangleShape recEnemyJet;
+    recEnemyJet.setSize(sf::Vector2f(100,100));
+    recEnemyJet.setTexture(&enemyJetIcon);
+    recEnemyJet.setPosition(400,50);
+
 //main window
-    sf::RenderWindow window(sf::VideoMode(800,630), "Star-Fighters");
+    sf::RenderWindow window(sf::VideoMode(850,630), "Star-Fighters");
     bool missileFire=false;
     int i;
     int posX,posY;
     bool showPowerStar=false,powerHit=false;
     bool missileHit=false;
+    int badgeHit=0;
 
     long int powerCount=1;
     int alienHitCount=0;
@@ -172,6 +197,12 @@ int main(){
     explosion.openFromFile("audio/explosion.wav");
     explosion.setVolume(40);
 
+     //Power star achieve effect
+    sf::Music beepPowerStar;
+    beepPowerStar.openFromFile("audio/beepStar.wav");
+    beepPowerStar.setVolume(40);
+
+    bool badgeUpdate;
 
 
 //GAME LOOP
@@ -214,7 +245,6 @@ int main(){
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
             recJet.setPosition(jetPos.x+.25,jetPos.y);
         }
-
         //Missile positioning
         //FIX SHIT
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
@@ -233,7 +263,8 @@ int main(){
         sf::Vector2f alienShipPos=recAlienShip.getPosition();
         recMissileHit.setPosition(alienShipPos.x,alienShipPos.y+20);
     }
-    if(alienHitCount>=5){
+
+    if(alienHitCount==5){
         recAlienShip.setSize(sf::Vector2f(0,0));
         missileHit=true;
     }
@@ -241,6 +272,10 @@ int main(){
         recAlienShip.move(0,+.5);
         recMissileHit.move(0,+.5);
         window.draw(recMissileHit);
+        if(!badgeUpdate){
+            badgeHit++;
+            badgeUpdate=true;
+        }
     }
 
 //jet and alien ship clash
@@ -263,7 +298,6 @@ int main(){
         recJet.setPosition(375,500);
         health--;
         explosion.play();
-
     }
 
 //show health
@@ -277,6 +311,7 @@ int main(){
         recAlienShip.setTexture(&alienShipIcon);
         missileHit=false;
         alienHitCount=0;
+        badgeUpdate=false;
     }
     if(hasReachedBoundary(recRock)){
         recRock.setPosition(jetPos.x+20,0);
@@ -289,6 +324,10 @@ int main(){
     if(!powerHit){
             showPowerStar=true;
         }
+    if(hasReachedTop(recJet)){
+        recJet.setPosition(375,500);
+    }
+
     if(hasReachedBoundary(recFireball)){
         recFireball.setPosition(650,0);
         recFireball.setTexture(&fireballIcon);
@@ -303,18 +342,33 @@ int main(){
     if(showPowerStar){
         window.draw(recPowerStar);
          if(isPowerStarHit(recJet,recPowerStar)){
+            beepPowerStar.stop();
                 if(health<=9){
+                    beepPowerStar.play();
                     health++;
                     recPowerStar.setSize(sf::Vector2f(0,0));
                 }
                 powerHit=true;
             }
     }
-
-
 //for clash with rock
     if(isClashFireball(recJet,recRock)){
         recJet.setPosition(375,500);
+    }
+//show badge
+    for(int i=1;i<=badgeHit;i++){
+        recBadge.setPosition(10,i*40);
+        window.draw(recBadge);
+    }
+
+    if(badgeHit>=3){
+        sf::Vector2f recEnemyJetPos=recEnemyJet.getPosition();
+        //recEnemyJet.setPosition(400,50);
+        if(recEnemyJetPos.x>700){
+            recEnemyJet.setPosition(0,50);
+        }
+        recEnemyJet.move(+.25,0);
+        window.draw(recEnemyJet);
     }
 
         window.draw(recMissile);
