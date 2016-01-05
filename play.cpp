@@ -154,6 +154,26 @@ int main(){
 
     long int powerCount=1;
     int alienHitCount=0;
+
+
+    //Audio
+    //alienship hit
+    sf::Music alienShipHit;
+    alienShipHit.openFromFile("audio/alienshipHit.wav");
+    alienShipHit.setVolume(40);         // reduce the volume
+
+     //missile  hit
+    sf::Music missileFireLaunch;
+    missileFireLaunch.openFromFile("audio/missileFire.wav");
+    missileFireLaunch.setVolume(50);
+
+     //explosion  effect
+    sf::Music explosion;
+    explosion.openFromFile("audio/explosion.wav");
+    explosion.setVolume(40);
+
+
+
 //GAME LOOP
     while (window.isOpen()){
         showPowerStar=false;
@@ -198,12 +218,15 @@ int main(){
         //Missile positioning
         //FIX SHIT
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
+        missileFireLaunch.stop();
+        missileFireLaunch.play();
         jetPos=recJet.getPosition();
         recMissile.setSize(sf::Vector2f(30,50));
         recMissile.setPosition(jetPos.x+20,jetPos.y-30);
         missileFire=true;
     }
     if(missileHitAlienship(recMissile,recAlienShip) && missileFire){
+        alienShipHit.play();
         alienHitCount++;
         missileFire=false;
         recMissile.setSize(sf::Vector2f(0,0));
@@ -211,10 +234,8 @@ int main(){
         recMissileHit.setPosition(alienShipPos.x,alienShipPos.y+20);
     }
     if(alienHitCount>=5){
-
         recAlienShip.setSize(sf::Vector2f(0,0));
         missileHit=true;
-
     }
     if(missileHit){
         recAlienShip.move(0,+.5);
@@ -227,18 +248,22 @@ int main(){
         recAlienShip.setTexture(&blastIcon);
         recJet.setPosition(375,500);
         health--;
+        explosion.play();
     }
 //jet and fireball clash
     if(isClashFireball(recJet,recFireball)){
         recFireball.setTexture(&blastIcon);
         recJet.setPosition(375,500);
         health--;
+        explosion.play();
 
     }
-    if(isClashAlienShip(recJet,recFireball02)){
+    if(isClashFireball(recJet,recFireball02)){
         recFireball02.setTexture(&blastIcon);
         recJet.setPosition(375,500);
         health--;
+        explosion.play();
+
     }
 
 //show health
