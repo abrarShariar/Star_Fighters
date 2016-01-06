@@ -11,25 +11,12 @@
 
 int health=5;
 
-//detect clash between Jet and alienship
-bool isClashAlienShip(sf::RectangleShape &jet,sf::RectangleShape &alienship){
+//universal clash detection with radius parameter
+bool isClashing(sf::RectangleShape &jet,sf::RectangleShape &object,int radius){
     sf::Vector2f jetPos=jet.getPosition();
-    sf::Vector2f alienshipPos=alienship.getPosition();
-    return ((jetPos.x>alienshipPos.x && jetPos.x<alienshipPos.x+100) && (jetPos.y>alienshipPos.y && jetPos.y<alienshipPos.y+100));
-}
+    sf::Vector2f objectPos=object.getPosition();
 
-//detect clash with fireball
-bool isClashFireball(sf::RectangleShape &jet, sf::RectangleShape &ball){
-    sf::Vector2f jetPos=jet.getPosition();
-    sf::Vector2f ballPos=ball.getPosition();
-    return ((jetPos.x>=ballPos.x && jetPos.x<=ballPos.x+70) && (jetPos.y>=ballPos.y && jetPos.y<ballPos.y+70));
-}
-
-//detect power star hit
-bool isPowerStarHit(sf::RectangleShape &jet, sf::RectangleShape &power){
-    sf::Vector2f jetPos=jet.getPosition();
-    sf::Vector2f powerPos=power.getPosition();
-    return ((jetPos.x>powerPos.x && jetPos.x<powerPos.x+50) && (jetPos.y>=powerPos.y && jetPos.y<powerPos.y+50));
+    return ((jetPos.x>=objectPos.x && jetPos.x<=objectPos.x+radius) && (jetPos.y>=objectPos.y && jetPos.y<=objectPos.y+radius));
 }
 
 
@@ -43,27 +30,6 @@ bool hasReachedBoundary(sf::RectangleShape &obj){
 bool hasReachedTop(sf::RectangleShape &obj){
     sf::Vector2f objPos=obj.getPosition();
     return (objPos.y<10);
-}
-
-//detect missile hit alienship
-bool missileHitAlienship(sf::RectangleShape &missile,sf::RectangleShape &alienship){
-    sf::Vector2f missilePos=missile.getPosition();
-    sf::Vector2f alienshipPos=alienship.getPosition();
-    return ((missilePos.x>alienshipPos.x && missilePos.x<alienshipPos.x+150) && (missilePos.y>alienshipPos.y && missilePos.y<alienshipPos.y+150));
-}
-
-//detect bomb hit
-bool hasHitBomb(sf::RectangleShape &jet,sf::RectangleShape &bomb){
-    sf::Vector2f bombPos=bomb.getPosition();
-    sf::Vector2f jetPos=jet.getPosition();
-    return ((bombPos.x>jetPos.x && bombPos.x<jetPos.x+100) && (bombPos.y>jetPos.y && bombPos.y<jetPos.y+100));
-}
-
-//detect missile hit alien jet
-bool hasHitAlienJet(sf::RectangleShape &missile,sf::RectangleShape &alienJet){
-     sf::Vector2f missilePos=missile.getPosition();
-     sf::Vector2f alienPos=alienJet.getPosition();
-     return ((missilePos.x>alienPos.x && missilePos.x<missilePos.x+100) && (missilePos.y>alienPos.y && missilePos.y<alienPos.y+100));
 }
 
 
@@ -409,7 +375,7 @@ int main(){
         recMissile.setPosition(jetPos.x+20,jetPos.y-30);
         missileFire=true;
     }
-    if(missileHitAlienship(recMissile,recAlienShip) && missileFire){
+    if(isClashing(recMissile,recAlienShip,150) && missileFire){
         alienShipHit.play();
         alienHitCount++;
         missileFire=false;
@@ -433,21 +399,21 @@ int main(){
     }
 
 //jet and alien ship clash
-    if(isClashAlienShip(recJet,recAlienShip)){
+    if(isClashing(recJet,recAlienShip,100)){
         recAlienShip.setTexture(&blastIcon);
         recJet.setPosition(375,500);
         health--;
         explosion.play();
     }
 //jet and fireball clash
-    if(isClashFireball(recJet,recFireball)){
+    if(isClashing(recJet,recFireball,50)){
         recFireball.setTexture(&blastIcon);
         recJet.setPosition(375,500);
         health--;
         explosion.play();
 
     }
-    if(isClashFireball(recJet,recFireball02)){
+    if(isClashing(recJet,recFireball02,50)){
         recFireball02.setTexture(&blastIcon);
         recJet.setPosition(375,500);
         health--;
@@ -491,7 +457,7 @@ int main(){
 //display power pack
     if(showPowerStar){
         window.draw(recPowerStar);
-         if(isPowerStarHit(recJet,recPowerStar)){
+         if(isClashing(recJet,recPowerStar,50)){
             beepPowerStar.stop();
                 if(health<=9){
                     beepPowerStar.play();
@@ -502,7 +468,7 @@ int main(){
             }
     }
 //for clash with rock
-    if(isClashFireball(recJet,recRock)){
+    if(isClashing(recJet,recRock,50)){
         recJet.setPosition(375,500);
     }
 
@@ -525,7 +491,7 @@ int main(){
         }else{
             recEnemyBomb.move(0,.6);
         }
-        if(hasHitBomb(recJet,recEnemyBomb)){
+        if(isClashing(recJet,recEnemyBomb,100)){
             recEnemyBomb.setTexture(&missileHitIcon);
             recEnemyBomb.setSize(sf::Vector2f(500,500));
             alienShipHit.play();
@@ -545,7 +511,7 @@ int main(){
         window.draw(recEnemyBomb);
         window.draw(recEnemyJet);
 
-        if(hasHitAlienJet(recMissile,recEnemyJet) && missileFire){
+        if(isClashing(recMissile,recEnemyJet,100) && missileFire){
             alienShipHit.play();
             missileFire=false;
             recMissile.setSize(sf::Vector2f(0,0));
