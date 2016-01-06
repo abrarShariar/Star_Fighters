@@ -45,3 +45,46 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+#SFML
+SFML-2.3.2_Library/
+
+# Codeblocks
++bin/
++Debug/
++Release/
++lab/
+*.o
+*.out
+*.depend
+*.layout
+Star_Fighters.cscope_file_list
