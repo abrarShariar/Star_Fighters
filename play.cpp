@@ -6,6 +6,8 @@
 #include<SFML/Audio.hpp>
 #include<iostream>
 #include<cstdlib>
+#include<string>
+#include<sstream>
 
 int health=5;
 
@@ -57,6 +59,13 @@ bool hasHitBomb(sf::RectangleShape &jet,sf::RectangleShape &bomb){
     return ((bombPos.x>jetPos.x && bombPos.x<jetPos.x+100) && (bombPos.y>jetPos.y && bombPos.y<jetPos.y+100));
 }
 
+//detect missile hit alien jet
+bool hasHitAlienJet(sf::RectangleShape &missile,sf::RectangleShape &alienJet){
+     sf::Vector2f missilePos=missile.getPosition();
+     sf::Vector2f alienPos=alienJet.getPosition();
+     return ((missilePos.x>alienPos.x && missilePos.x<missilePos.x+100) && (missilePos.y>alienPos.y && missilePos.y<alienPos.y+100));
+}
+
 
 
 int main(){
@@ -70,6 +79,25 @@ int main(){
     recBackground.setPosition(0,0);
     recBackground.setTexture(&background);
     */
+
+     //load font
+    sf::Font font;
+    font.loadFromFile("font/Timeless.ttf");
+    std::string gameText="Destroy Alien Ships to Earn Sliver Wings";
+    //text for displaying game directions
+    sf::Text gameDirection(gameText,font);
+    gameDirection.setCharacterSize(15);
+    gameDirection.setPosition(300,5);
+    gameDirection.setColor(sf::Color::Red);
+
+
+
+    //Text for achievement text
+    sf::Text achieveText;
+    achieveText.setFont(font);
+    achieveText.setCharacterSize(25);
+    achieveText.setPosition(250,250);
+    achieveText.setColor(sf::Color::Red);
 
 
     //Texture (Health)
@@ -165,7 +193,6 @@ int main(){
     recBadge.setSize(sf::Vector2f(60,30));
     recBadge.setTexture(&badgeIcon);
 
-
       //Texture Enemy jet
     sf::Texture enemyJetIcon;
     enemyJetIcon.loadFromFile("images/enemyJet.png");
@@ -192,10 +219,10 @@ int main(){
     bool showPowerStar=false,powerHit=false;
     bool missileHit=false;
     int badgeHit=0;
+    bool alienJetHit=false;
 
     long int powerCount=1;
     int alienHitCount=0;
-
 
     //Audio
     //alienship hit
@@ -223,6 +250,9 @@ int main(){
     int bombCount=0;
     bool bombHit=false;
 
+    //alien jet health
+    int alienJetHealth=10;
+
 
 //GAME LOOP
     while (window.isOpen()){
@@ -232,10 +262,6 @@ int main(){
         recRock.move(0,0.05);
         recFireball.move(0,.1);
         recFireball02.move(0,0.1);
-    //move missile if fired
-        if(missileFire){
-            recMissile.move(0,-0.25);
-        }
 
         sf::Event event;
         while (window.pollEvent(event))
@@ -244,6 +270,11 @@ int main(){
             window.close();
             }
         }
+         //move missile if fired
+        if(missileFire){
+            recMissile.move(0,-0.25);
+        }
+
 
         //key for jet movement
         sf::Vector2f jetPos=recJet.getPosition();
@@ -264,6 +295,56 @@ int main(){
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
             recJet.setPosition(jetPos.x+.25,jetPos.y);
         }
+
+        //show health
+    for(int i=1;i<=health;i++){
+        recHealth.setPosition(i*20,10);
+        window.draw(recHealth);
+    }
+    //show badge
+    for(int i=1;i<=badgeHit;i++){
+        recBadge.setPosition(10,i*40);
+        window.draw(recBadge);
+    }
+
+
+         if(alienJetHealth==0){
+            recEnemyJet.setTexture(&missileHitIcon);
+            recEnemyJet.setSize(sf::Vector2f(150,150));
+            recEnemyBomb.setSize(sf::Vector2f(0,0));
+            gameText="MISSION COMPLETE !!";
+
+            std::string achivementText="YOU HAVE EARNED ";
+            std::stringstream ss;
+            ss<<badgeHit;
+            std::string temp;
+            ss>>temp;
+            achivementText=achivementText+temp+" SILVER WINGS !!";
+            achieveText.setString(achivementText);
+            gameDirection.setString(gameText);
+            gameDirection.setCharacterSize(25);
+            //for enemy jet
+        sf::Vector2f recEnemyJetPos=recEnemyJet.getPosition();
+        //recEnemyJet.setPosition(400,50);
+        if(recEnemyJetPos.x>700){
+            recEnemyJet.setPosition(0,50);
+        }
+        recEnemyJet.move(+.15,0);
+
+            window.draw(recEnemyJet);
+            window.draw(recJet);
+            window.draw(achieveText);
+            window.draw(gameDirection);
+            window.draw(recEnemyJet);
+            window.display();
+
+
+            continue;
+        }
+
+
+
+
         //Missile positioning
         //FIX SHIT
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
@@ -319,11 +400,7 @@ int main(){
         explosion.play();
     }
 
-//show health
-    for(int i=1;i<=health;i++){
-        recHealth.setPosition(i*20,10);
-        window.draw(recHealth);
-    }
+
     if(hasReachedBoundary(recAlienShip)){
         recAlienShip.setSize(sf::Vector2f(150,150));
         recAlienShip.setPosition(jetPos.x-10,-10);
@@ -374,13 +451,11 @@ int main(){
     if(isClashFireball(recJet,recRock)){
         recJet.setPosition(375,500);
     }
-//show badge
-    for(int i=1;i<=badgeHit;i++){
-        recBadge.setPosition(10,i*40);
-        window.draw(recBadge);
-    }
+
 
     if(badgeHit>=3){
+        gameText="Complete this mission by destroying this alien jet (10 Hit)";
+        gameDirection.setString(gameText);
         sf::Vector2f recEnemyJetPos=recEnemyJet.getPosition();
         //recEnemyJet.setPosition(400,50);
         if(recEnemyJetPos.x>700){
@@ -405,7 +480,7 @@ int main(){
                 bombCount++;
                 bombHit=true;
                 health--;
-                std::cout<<bombCount<<std::endl;
+                //std::cout<<bombCount<<std::endl;
             }
         }
         if(hasReachedBoundary(recEnemyBomb)){
@@ -413,13 +488,22 @@ int main(){
             recEnemyBomb.setTexture(&enemyBombIcon);
             recEnemyBomb.setSize(sf::Vector2f(40,50));
         }
-
         window.draw(recEnemyBomb);
         window.draw(recEnemyJet);
 
+        if(hasHitAlienJet(recMissile,recEnemyJet) && missileFire){
+            alienShipHit.play();
+            missileFire=false;
+            recMissile.setSize(sf::Vector2f(0,0));
+            alienJetHealth--;
+            //std::cout<<alienJetHealth<<"\t";
+        }
     }
 
 
+
+
+        window.draw(gameDirection);
         window.draw(recMissile);
         window.draw(recFireball02);
         window.draw(recFireball);
