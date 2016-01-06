@@ -212,6 +212,18 @@ int main(){
     recEnemyBomb.setSize(sf::Vector2f(30,50));
     recEnemyBomb.setTexture(&enemyBombIcon);
 
+      //Texture Jet flame
+    sf::Texture jetFlameIcon;
+    jetFlameIcon.loadFromFile("images/jetFlame.png");
+    //RectangleShape for jet flame 01
+    sf::RectangleShape recJetFlame01;
+    recJetFlame01.setSize(sf::Vector2f(10,40));
+    recJetFlame01.setTexture(&jetFlameIcon);
+    //RectangleShape for jet flame 02
+    sf::RectangleShape recJetFlame02;
+    recJetFlame02.setSize(sf::Vector2f(10,40));
+    recJetFlame02.setTexture(&jetFlameIcon);
+
 //main window
     sf::RenderWindow window(sf::VideoMode(850,630), "Star-Fighters");
     bool missileFire=false;
@@ -298,6 +310,10 @@ int main(){
         sf::Vector2f jetPos=recJet.getPosition();
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
                 recJet.setPosition(jetPos.x,jetPos.y-.25);
+                recJetFlame01.setPosition(jetPos.x+50,jetPos.y+60);
+                recJetFlame02.setPosition(jetPos.x+10,jetPos.y+60);
+                window.draw(recJetFlame01);
+                window.draw(recJetFlame02);
                 recAlienShip.move(0,.05);
                 recRock.move(0,.30);
                 recFireball.move(0,0.25);
