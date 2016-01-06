@@ -81,6 +81,8 @@ int main(){
     */
 
      //load font
+
+
     sf::Font font;
     font.loadFromFile("font/Timeless.ttf");
     std::string gameText="Destroy Alien Ships to Earn Sliver Wings";
@@ -202,7 +204,6 @@ int main(){
     recEnemyJet.setTexture(&enemyJetIcon);
     recEnemyJet.setPosition(400,50);
 
-
       //Texture Enemy jet
     sf::Texture enemyBombIcon;
     enemyBombIcon.loadFromFile("images/bomb.png");
@@ -245,6 +246,20 @@ int main(){
     beepPowerStar.openFromFile("audio/beepStar.wav");
     beepPowerStar.setVolume(40);
 
+    //Game over music effect
+    sf::Music gameOverMusic;
+    gameOverMusic.openFromFile("audio/gameOver.wav");
+    gameOverMusic.setVolume(40);
+    gameOverMusic.setLoop(true);
+
+
+     //Soundtract during game
+    sf::Music gameOnMusic;
+    gameOnMusic.openFromFile("audio/gameOn.wav");
+    gameOnMusic.setVolume(25);
+    gameOnMusic.setLoop(true);
+
+
     bool badgeUpdate;
     bool bombAgain=false;
     int bombCount=0;
@@ -255,7 +270,10 @@ int main(){
 
 
 //GAME LOOP
+    gameOnMusic.play();
+
     while (window.isOpen()){
+
         showPowerStar=false;
         window.clear(sf::Color::Black);
         recAlienShip.move(0,.05);
@@ -308,7 +326,27 @@ int main(){
     }
 
 
+//Game Over
+    if(health==0){
+        gameText="Mission Terminated !! ";
+        gameDirection.setString(gameText);
+        gameDirection.setCharacterSize(25);
+        std::string gameOverText="GAME OVER !!";
+        sf::Text gameOver(gameOverText,font);
+        gameOver.setCharacterSize(30);
+        gameOver.setPosition(350,250);
+        gameOver.setColor(sf::Color::Red);
+
+        window.draw(gameDirection);
+        window.draw(gameOver);
+        window.draw(recJet);
+        window.display();
+        continue;
+    }
+
+//MISSION COMPLTE
          if(alienJetHealth==0){
+
             recEnemyJet.setTexture(&missileHitIcon);
             recEnemyJet.setSize(sf::Vector2f(150,150));
             recEnemyBomb.setSize(sf::Vector2f(0,0));
@@ -338,7 +376,7 @@ int main(){
             window.draw(recEnemyJet);
             window.display();
 
-
+            //gameOverMusic.play();
             continue;
         }
 
@@ -502,7 +540,6 @@ int main(){
 
 
 
-
         window.draw(gameDirection);
         window.draw(recMissile);
         window.draw(recFireball02);
@@ -513,6 +550,7 @@ int main(){
         //window.draw(recMissile);
         window.draw(recJet);
         window.display();
+
 
         }
     }
