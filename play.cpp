@@ -9,6 +9,14 @@
 #include<string>
 #include<sstream>
 
+//using constant instead of "magic numbers" which become confusing
+const int
+JET_RADIUS = 70,
+ALIENSHIP_RADIUS = 150,
+ROCK_RADIUS = 70,
+ENEMYJET_RADIUS = 100;
+
+
 int health=5;
 
 //universal clash detection with radius parameter
@@ -81,7 +89,7 @@ int main(){
     jet01.loadFromFile("images/jet_01.png");
     //RectangularShape for Jet stage 01
      sf::RectangleShape recJet;
-    recJet.setSize(sf::Vector2f(70,70));
+    recJet.setSize(sf::Vector2f(JET_RADIUS,JET_RADIUS));
     recJet.setPosition(375,500);
     recJet.setTexture(&jet01);
 
@@ -101,7 +109,7 @@ int main(){
     //container for all alienship
     sf::RectangleShape recAlienShip;
     recAlienShip.setPosition(500,0);
-    recAlienShip.setSize(sf::Vector2f(150,150));
+    recAlienShip.setSize(sf::Vector2f(ALIENSHIP_RADIUS,ALIENSHIP_RADIUS));
     recAlienShip.setTexture(&alienShipIcon);
 
 
@@ -118,7 +126,7 @@ int main(){
     rockIcon.loadFromFile("images/rock_01.png");
     //RectangularShape for Rock stage 01
      sf::RectangleShape recRock;
-    recRock.setSize(sf::Vector2f(70,70));
+    recRock.setSize(sf::Vector2f(ROCK_RADIUS,ROCK_RADIUS));
     recRock.setPosition(100,50);
     recRock.setTexture(&rockIcon);
 
@@ -166,7 +174,7 @@ int main(){
     enemyJetIcon.loadFromFile("images/enemyJet.png");
     //RectangleShape for jet
     sf::RectangleShape recEnemyJet;
-    recEnemyJet.setSize(sf::Vector2f(100,100));
+    recEnemyJet.setSize(sf::Vector2f(ENEMYJET_RADIUS,ENEMYJET_RADIUS));
     recEnemyJet.setTexture(&enemyJetIcon);
     recEnemyJet.setPosition(400,50);
 
@@ -375,7 +383,7 @@ int main(){
         recMissile.setPosition(jetPos.x+20,jetPos.y-30);
         missileFire=true;
     }
-    if(isClashing(recMissile,recAlienShip,150) && missileFire){
+    if(isClashing(recMissile,recAlienShip,ALIENSHIP_RADIUS) && missileFire){
         alienShipHit.play();
         alienHitCount++;
         missileFire=false;
@@ -399,7 +407,7 @@ int main(){
     }
 
 //jet and alien ship clash
-    if(isClashing(recJet,recAlienShip,100)){
+    if(isClashing(recJet,recAlienShip,JET_RADIUS)){
         recAlienShip.setTexture(&blastIcon);
         recJet.setPosition(375,500);
         health--;
@@ -407,12 +415,16 @@ int main(){
     }
 //jet and fireball clash
     if(isClashing(recJet,recFireball,50)){
+        //50 is a magic number here, try to give it some kind of meaning
+        //maybe use a constant for what the number actually represents?
+
         recFireball.setTexture(&blastIcon);
         recJet.setPosition(375,500);
         health--;
         explosion.play();
 
     }
+
     if(isClashing(recJet,recFireball02,50)){
         recFireball02.setTexture(&blastIcon);
         recJet.setPosition(375,500);
@@ -468,7 +480,7 @@ int main(){
             }
     }
 //for clash with rock
-    if(isClashing(recJet,recRock,50)){
+    if(isClashing(recJet,recRock,ROCK_RADIUS)){
         recJet.setPosition(375,500);
     }
 
