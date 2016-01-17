@@ -199,7 +199,7 @@ int main(){
     recJetFlame02.setTexture(&jetFlameIcon);
 
 //main window
-    sf::RenderWindow window(sf::VideoMode(850,630), "Star-Fighters");
+    sf::RenderWindow window(sf::VideoMode(850,700), "Star-Fighters");
     bool missileFire=false;
     int i;
     int posX,posY;
@@ -207,7 +207,6 @@ int main(){
     bool missileHit=false;
     int badgeHit=0;
     bool alienJetHit=false;
-
     long int powerCount=1;
     int alienHitCount=0;
 
@@ -245,21 +244,27 @@ int main(){
     gameOnMusic.setVolume(25);
     gameOnMusic.setLoop(true);
 
+     //Soundtract for jet moving forward
+    sf::Music jetFlameSound;
+    jetFlameSound.openFromFile("audio/jetFlame.wav");
+    jetFlameSound.setVolume(25);
+    //jetFlameSound.setLoop(true);
+
 
     bool badgeUpdate;
     bool bombAgain=false;
     int bombCount=0;
     bool bombHit=false;
+    bool jetFlameOn=false;
 
     //alien jet health
     int alienJetHealth=10;
-
 
 //GAME LOOP
     gameOnMusic.play();
 
     while (window.isOpen()){
-
+        //jetFlameOn=false;
         showPowerStar=false;
         window.clear(sf::Color::Black);
         recAlienShip.move(0,.05);
@@ -279,10 +284,10 @@ int main(){
             recMissile.move(0,-0.25);
         }
 
-
         //key for jet movement
         sf::Vector2f jetPos=recJet.getPosition();
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+                //jetFlameSound.play();
                 recJet.setPosition(jetPos.x,jetPos.y-.25);
                 recJetFlame01.setPosition(jetPos.x+50,jetPos.y+60);
                 recJetFlame02.setPosition(jetPos.x+10,jetPos.y+60);
@@ -292,6 +297,13 @@ int main(){
                 recRock.move(0,.30);
                 recFireball.move(0,0.25);
                 recFireball02.move(0,0.05);
+                /*
+                if(!jetFlameOn){
+                    jetFlameSound.stop();
+                    jetFlameSound.play();
+                    jetFlameOn=true;
+                }
+                */
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
             recJet.setPosition(jetPos.x,jetPos.y+.25);
@@ -533,7 +545,7 @@ int main(){
     }
 
 
-
+        //jetFlameSound.stop();
         window.draw(gameDirection);
         window.draw(recMissile);
         window.draw(recFireball02);
