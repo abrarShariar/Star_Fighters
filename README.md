@@ -1,6 +1,6 @@
 # Star_Fighters
 
-[Download & Play]()
+[Download & Play](https://github.com/abrarShariar/StarFighters_Release/archive/master.zip)
 
 **For code geeks : **
 
@@ -16,4 +16,4 @@
 
 *HAPPY CODING*
 
-[Download & Play]()
+[Download & Play](https://github.com/abrarShariar/StarFighters_Release/archive/master.zip)
