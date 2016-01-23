@@ -1,25 +1,19 @@
 # Star_Fighters
 
-UNDER DEVELOPMENT 
+[Download & Play]()
 
-**Build play.cpp in any IDE**
-
-**Run play.exe & Play at your own RISK !!** 
+**For code geeks : **
 
 <hr>
 
-Basic Game Instructions: 
+*-This repo contains the project directory of the game*
 
+*-SFML-2.3.2 is used*
 
-*-Press "Space" to launch missile*
+*-Open the Star_Fighters.cbp file in your default IDE*
 
-*-The golden stars indicate your health status*
+*-You are free to play around the code !!*
 
-*-Obtain blue stars to upgrade health*
+*HAPPY CODING*
 
-*-The silver wings are your achievements*
-
-*-Destroy alien ships to earn silver wings*
-
-*-Destroy Alien Bomber to complete mission*
-
+[Download & Play]()
