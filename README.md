@@ -1,12 +1,20 @@
 # Star_Fighters
+**Source Code of Start Fighters**
 
 [Download & Play](https://github.com/abrarShariar/StarFighters_Release/archive/master.zip)
 
-**For code geeks : **
+
+
+###Preview
+![game preview](https://raw.githubusercontent.com/abrarShariar/Star_Fighters/master/star4.PNG)
+
+![game preview](https://raw.githubusercontent.com/abrarShariar/Star_Fighters/master/star7.PNG)
+
+![game preview](https://raw.githubusercontent.com/abrarShariar/Star_Fighters/master/star_end.PNG)
 
 <hr>
 
-*-This repo contains the project directory of the game*
+
 
 *-SFML-2.3.2 is used*
 
